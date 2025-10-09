@@ -1,0 +1,38 @@
+{
+  "name": "playwright-nem",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Andry Nem",
+  "type": "module",
+  "main": "index.js",
+  "lint-staged": {
+    "packages/**/src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix"
+    ],
+    "packages/**/src/**/*.{ts,tsx,js,jsx,json,md,yml,yaml,css,scss}": [
+      "prettier --write"
+    ]
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prettier": "prettier --config .prettierrc src/**/*.ts --check src/",
+    "prettier:fix": "prettier --config .prettierrc src/**/*.ts --write src/",
+    "format": " npm run prettier && npm run lint",
+    "format:fix": "npm run prettier:fix && npm run lint:fix",
+    "prepare": "husky",
+    "test:ui": "npx playwright test",
+    "ui-mode": "npx playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.6.2"
+  },
+  "dependencies": {
+    "lint-staged": "^16.2.3",
+    "lodash": "^4.17.21"
+  }
+}
