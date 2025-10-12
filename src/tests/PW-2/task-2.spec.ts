@@ -20,6 +20,8 @@ test.describe("[demo-login-form]", () => {
   test("Should login with valid credentials", async ({ page }) => {
     const url = "https://anatoly-karpovich.github.io/demo-login-form/";
     const loginForm = page.locator("#loginForm");
+    const userNameInput = page.locator("#userName");
+    const passwordInput = page.locator("#password");
     const submitButton = page.locator("#submit");
     const validCredentials: ICreditentials = {
       name: "test@gmail.com",
@@ -34,15 +36,20 @@ test.describe("[demo-login-form]", () => {
     }, validCredentials);
 
     await expect(loginForm).toBeVisible();
-    await page.evaluate((validCredentials) => {
-      const item = localStorage.getItem(validCredentials.name);
-      if (item) {
-        const credentials = JSON.parse(item);
-        document.querySelector<HTMLInputElement>("#userName")!.value = credentials.name;
-        document.querySelector<HTMLInputElement>("#password")!.value = credentials.password;
-      }
-    }, validCredentials);
+    await userNameInput.fill(validCredentials.name);
+    await passwordInput.fill(validCredentials.password);
     await submitButton.click();
     await expect(succsessMessageSelector).toBeVisible();
   });
 });
+
+//===== для того чтобы брать креды из локалстораджа нужно воспользоваться методом page.evaluate
+
+//   await page.evaluate((validCredentials) => {
+//       const item = localStorage.getItem(validCredentials.name);
+//       if (item) {
+//         const credentials = JSON.parse(item);
+//         document.querySelector<HTMLInputElement>("#userName")!.value = credentials.name;
+//         document.querySelector<HTMLInputElement>("#password")!.value = credentials.password;
+//       }
+//     }, validCredentials);

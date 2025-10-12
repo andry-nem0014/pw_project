@@ -31,8 +31,7 @@ test.describe("[dynamic-controls]", () => {
     const checkbox = page.locator("//input[@type = 'checkbox']");
     const loader = page.locator("//div[@id= 'loading'][1]");
     const addButton = page.locator("//button[text() = 'Add']");
-    const itsGoneText = page.getByText(TEXT.IT_IS_GONE);
-    const itsBackText = page.getByText(TEXT.IT_IS_BACK);
+    const GoneBackText = page.locator("p#message");
 
     await page.goto(url);
     await page.locator("//a[text() = 'Dynamic Controls']").click();
@@ -44,11 +43,11 @@ test.describe("[dynamic-controls]", () => {
     await expect(loader).toBeVisible();
     await expect(loader).toBeVisible({ visible: false, timeout: 20000 });
     await expect(addButton).toBeVisible();
-    await expect(itsGoneText).toBeVisible();
+    await expect(GoneBackText).toHaveText(TEXT.IT_IS_GONE);
     await addButton.click();
     await expect(loader).toBeVisible();
     await expect(loader).toBeVisible({ visible: false, timeout: 20000 });
     await expect(checkbox).toBeVisible();
-    await expect(itsBackText).toBeVisible();
+    await expect(GoneBackText).toHaveText(TEXT.IT_IS_BACK);
   });
 });
