@@ -38,7 +38,6 @@ test.describe("[demo-registration-form]", () => {
     const userPhoneInput = page.locator("input#phone");
     const userEmailInput = page.locator("input#email");
     const selectorCountry = page.locator("select#country");
-    //const selectOptionCountry = page.locator("//select[@id = 'country']//option[2]");
     const userGender = page.locator("//div[@class = 'mb-3']//child::input[@value = 'male']");
     const userHobbies = page.locator("//div[@class = 'mb-3']//child::input[@value='Movies']");
     const userLanguage = page.locator("#language");
@@ -48,11 +47,6 @@ test.describe("[demo-registration-form]", () => {
     const userDateDaySelector = page.locator("//select[@id = 'day']");
     const userPasswordInput = page.locator("input#password");
     const userConfirmPasswordInput = page.locator("input#password-confirm");
-    // const userDate = {
-    //   day: page.locator(`//select[@id ='year']//child::option[@value = ${validCredentials.date.year}]`),
-    //   month: page.locator(`//select[@id ='month']//child::option[text() = ${validCredentials.date.month}]`),
-    //   year: page.locator(`//select[@id ='day']//child::option[@value = ${validCredentials.date.day}]`),
-    // };
     const userSubmitButton = page.locator("button.btn-primary");
     const userDataSucsessRegistration = page.locator("h2.text-center");
     const userFullName = page.locator("#fullName");
