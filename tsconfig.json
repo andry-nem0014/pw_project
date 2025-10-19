@@ -5,6 +5,8 @@
     "rootDir": ".",
     "outDir": "./dist",
     "baseUrl": "src",
+    "allowImportingTsExtensions": true, //добавил т.к. была ошибка ипорта в register.data.ts
+    "noEmit": true,             //добавил т.к. была ошибка ипорта в register.data.ts
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -42,6 +44,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   }, 
-  "include": ["src", "playwright.config.ts"],
+  "include": ["src", "playwright.config.ts", "src/tests"],
   //"exclude": ["node_modules"]
 }
