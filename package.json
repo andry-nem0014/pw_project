@@ -4,7 +4,6 @@
   "description": "",
   "license": "ISC",
   "author": "Andry Nem",
-  "type": "module",
   "main": "index.js",
   "lint-staged": {
     "packages/**/src/**/*.{ts,tsx,js,jsx}": [
@@ -29,9 +28,11 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0",
-    "@types/node": "^24.6.2"
+    "@types/node": "^24.9.1",
+    "husky": "^9.1.7"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "lint-staged": "^16.2.3",
     "lodash": "^4.17.21"
   }
