@@ -18,7 +18,6 @@ interface TableRow {
 }
 
 async function getTableRow(page: Page, email: string): Promise<TableRow | null> {
-  // Таблица Example 2 имеет id="table2"
   const table = page.locator("#table1");
   // Считываем все строки тела таблицы
   const rows = await table.locator("tbody tr").all();
