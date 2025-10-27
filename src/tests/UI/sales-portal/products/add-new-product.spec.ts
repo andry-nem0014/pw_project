@@ -114,7 +114,7 @@ test.describe("[Sales Portal] [Products]", async () => {
     await addNewProductPage.fillForm(productData);
     await addNewProductPage.clickSave();
     await productsListPage.waitForOpened();
-    await expect(productsListPage.toastMessage).toContainText(NOTIFICATIONS.PRODUCT_CREATED);
+    await expect(productsListPage.toastMessage).toContainText(NOTIFICATIONS.PRODUCT_DELETED);
     await expect(productsListPage.tableRowByName(productData.name)).toBeVisible();
   });
 });

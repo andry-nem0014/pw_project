@@ -9,6 +9,15 @@ export abstract class SalesPortalPage extends BasePage {
 
   async waitForOpened() {
     await expect(this.uniqueElement).toBeVisible();
+    await this.waitForSpinners();
+  }
+
+  async waitForClosed() {
+    await expect(this.uniqueElement).not.toBeVisible();
+    await this.waitForSpinners();
+  }
+
+  async waitForSpinners() {
     await expect(this.spinner).toHaveCount(0);
   }
 
