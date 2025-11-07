@@ -46,22 +46,3 @@ test("getTableRow returns correct row object for each email in table1", async ({
     if (data) expect(data.Email.trim()).toBe(email);
   }
 });
-
-// for (const row of rows) {
-//   // Получаем все ячейки <td> строки
-//   const cells = await row.locator("td").all();
-//   // В третьей ячейке находится Email (индекс 2)
-//   const rowEmail = (await cells[2]!.innerText()).trim();
-//   if (rowEmail === email) {
-//     // Возвращаем объект с данными из ячеек - строго по спецификации
-//     return {
-//       "Last Name": (await cells[0]!.innerText()).trim(),
-//       "First Name": (await cells[1]!.innerText()).trim(),
-//       Email: (await cells[2]!.innerText()).trim(),
-//       Due: (await cells[3]!.innerText()).trim(),
-//       "Web Site": (await cells[4]!.innerText()).trim(),
-//     };
-//   }
-// }
-// return null;
-//}
