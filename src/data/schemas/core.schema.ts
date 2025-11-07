@@ -6,3 +6,14 @@ export const obligatoryFieldsSchema = {
 };
 
 export const obligatoryRequredFields = ["IsSuccess", "ErrorMessage"];
+
+export const errorSchema = {
+  type: "object",
+  properties: {
+    ...obligatoryFieldsSchema,
+    SchemaErrors: {
+      type: "array",
+    },
+  },
+  required: [...obligatoryRequredFields],
+};
