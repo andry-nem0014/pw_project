@@ -5,6 +5,8 @@
     "rootDir": ".",
     "outDir": "./dist",
     "baseUrl": "src",
+    "allowImportingTsExtensions": true, //добавил т.к. была ошибка ипорта в register.data.ts
+    "noEmit": true,                     //добавил т.к. была ошибка ипорта в register.data.ts
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -12,7 +14,7 @@
     "target": "esnext",
     // "types": [],
     // For nodejs:
-    //"lib": ["esnext"],
+    "lib": ["esnext"],
     "types": ["node"],
     // and npm install -D @types/node
 

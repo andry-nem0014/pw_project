@@ -1,0 +1,77 @@
+[
+  {
+    "credentials": { "username": "", "password": "SuperSecretPassword!" },
+    "errorMessage": "Username is required",
+    "title": "Username is required"
+  },
+  {
+    "credentials": { "username": "An", "password": "SuperSecretPassword!" },
+    "errorMessage": "Username should contain at least 3 characters",
+    "title": "Name less than 3 symbols"
+  },
+  {
+    "credentials": {
+      "username": "Jasdjhgasjhdasdasjkdajshdahsdhjaasdndsadadas",
+      "password": "SuperSecretPassword!"
+    },
+    "errorMessage": "Username can't exceed 40 characters",
+    "title": "Name more than 40 symbols"
+  },
+  {
+    "credentials": {
+      "username": "       ",
+      "password": "SuperSecretPassword!"
+    },
+    "errorMessage": "Prefix and postfix spaces are not allowed is username",
+    "title": "Name only spaces"
+  },
+  {
+    "credentials": { "username": " andry", "password": "SuperSecretPassword!" },
+    "errorMessage": "Prefix and postfix spaces are not allowed is username",
+    "title": "Name with a space prefix"
+  },
+  {
+    "credentials": { "username": "Andry ", "password": "SuperSecretPassword!" },
+    "errorMessage": "Prefix and postfix spaces are not allowed is username",
+    "title": "Name with a space postfix"
+  },
+  {
+    "credentials": { "username": "Andreynemtsev", "password": "" },
+    "errorMessage": "Password is required",
+    "title": "Required password"
+  },
+  {
+    "credentials": { "username": "Andreynemtsev", "password": "111" },
+    "errorMessage": "Password should contain at least 8 characters",
+    "title": "Password less than 8 symbols"
+  },
+  {
+    "credentials": {
+      "username": "Andreynemtsev",
+      "password": "asbhdSADbdandnabsdbasdn8u31283123bandasbdas"
+    },
+    "errorMessage": "Password can't exceed 20 characters",
+    "title": "Password more than 20 symbols"
+  },
+  {
+    "credentials": { "username": "Andreynemtsev", "password": "         " },
+    "errorMessage": "Password is required",
+    "title": "Password is only spaces"
+  },
+  {
+    "credentials": {
+      "username": "Andreynemtsev",
+      "password": "12312asdadasdasd"
+    },
+    "errorMessage": "Password should contain at least one character in upper case",
+    "title": "Password without upper case"
+  },
+  {
+    "credentials": {
+      "username": "Andreynemtsev",
+      "password": "12312ADSASDSADASDA"
+    },
+    "errorMessage": "Password should contain at least one character in lower case",
+    "title": "Password without lower case"
+  }
+]
