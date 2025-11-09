@@ -1,11 +1,24 @@
-import { test as base, expect } from "fixtures/pages.fixture";
-import { credentials, SALES_PORTAL_URL } from "config/env";
+import { SALES_PORTAL_URL, credentials } from "config/env";
+import { test as base, expect } from "fixtures";
 
 export const test = base.extend<{
   loginAsAdmin: () => Promise<void>;
 }>({
   loginAsAdmin: async ({ page, homePage }, use) => {
     await use(async () => {
+      // const token = await loginApiService.loginAsAdmin();
+      // await page.context().addCookies([
+      //   {
+      //     name: "Authorization",
+      //     value: token,
+      //     domain: "localhost",
+      //     path: "/",
+      //     expires: -1,
+      //     httpOnly: false,
+      //     secure: false,
+      //     sameSite: "Lax",
+      //   },
+      // ]);
       const emailInput = page.locator("#emailinput");
       const passwordInput = page.locator("#passwordinput");
       const loginButton = page.locator("button[type='submit']");

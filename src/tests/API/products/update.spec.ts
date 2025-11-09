@@ -1,91 +1,145 @@
-import test, { expect } from "@playwright/test";
-import { apiConfig } from "config/apiConfig";
-import { credentials } from "config/env";
+import { test, expect } from "fixtures/api.fixture";
 import { generateProductData } from "data/salesPortal/products/generateProductData";
 import { createProductSchema } from "data/schemas/products/create.schema";
 import { STATUS_CODES } from "data/statusCodes";
 import _ from "lodash";
-import { validateResponse } from "utils/validateResponse.utils.ts";
-
-const { baseURL, endpoints } = apiConfig;
+import { validateResponse } from "utils/validation/validateResponse.utils";
+import { ERROR_MESSAGES } from "data/salesPortal/notifications";
+import { errorSchema } from "data/schemas/core.schema";
+import { MANUFACTURERS } from "data/salesPortal/products/manufacturers";
 
 test.describe("[API] [Sales Portal] [Products]", () => {
-  let id = "";
-  let token = "";
+  test.describe("Smoke", () => {
+    const ids: string[] = [];
+    let token = "";
 
-  test.afterEach(async ({ request }) => {
-    const response = await request.delete(`${baseURL}${endpoints.productById(id)}`, {
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    test.afterEach(async ({ productsApiService }) => {
+      if (ids.length) {
+        for (const id of ids) {
+          await productsApiService.delete(token, id);
+        }
+        ids.length = 0;
+      }
     });
-    expect(response.status()).toBe(STATUS_CODES.DELETED);
+
+    test("Update product", async ({ loginApiService, productsApiService, productsApi }) => {
+      //TODO: Preconditions
+      token = await loginApiService.loginAsAdmin();
+      const createdProduct = await productsApiService.create(token);
+      ids.push(createdProduct._id);
+
+      //TODO: Action
+      const updatedProductData = generateProductData();
+      const updatedProductResponse = await productsApi.update(createdProduct._id, updatedProductData, token);
+
+      //TODO: Assert
+      validateResponse(updatedProductResponse, {
+        status: STATUS_CODES.OK,
+        schema: createProductSchema,
+        IsSuccess: true,
+        ErrorMessage: null,
+      });
+
+      const updatedProduct = updatedProductResponse.body.Product;
+      expect(_.omit(updatedProduct, ["_id", "createdOn"])).toEqual(updatedProductData);
+      expect(createdProduct._id).toBe(updatedProduct._id);
+    });
   });
 
-  test("Update product", async ({ request }) => {
-    //TODO: Preconditions
-    const loginResponse = await request.post(baseURL + endpoints.login, {
-      data: credentials,
-      headers: {
-        "content-type": "application/json",
-      },
+  test.describe("NOT SMOKE", () => {
+    const ids: string[] = [];
+    let token = "";
+    test.beforeEach(async ({ loginApiService }) => {
+      token = await loginApiService.loginAsAdmin();
     });
-    const loginBody = await loginResponse.json();
-    expect.soft(loginResponse.status()).toBe(STATUS_CODES.OK);
-    expect.soft(loginBody.IsSuccess).toBe(true);
-    expect.soft(loginBody.ErrorMessage).toBe(null);
-    expect.soft(loginBody.User.username).toBe(credentials.username);
-
-    const headers = loginResponse.headers();
-    token = headers["authorization"]!;
-    expect(token).toBeTruthy();
-
-    const productData = generateProductData();
-    const createProductResponse = await request.post(baseURL + endpoints.products, {
-      data: productData,
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    test.afterEach(async ({ productsApiService }) => {
+      if (ids.length) {
+        for (const id of ids) {
+          await productsApiService.delete(token, id);
+        }
+        ids.length = 0;
+      }
     });
 
-    const createProductBody = await createProductResponse.json();
-    await validateResponse(createProductResponse, {
-      status: STATUS_CODES.CREATED,
-      schema: createProductSchema,
-      IsSuccess: true,
-      ErrorMessage: null,
+    test("Should NOT update product without token", async ({ productsApi, productsApiService }) => {
+      const product = await productsApiService.create(token);
+      ids.push(product._id);
+
+      const response = await productsApi.update(product._id, generateProductData(), "");
+      validateResponse(response, {
+        IsSuccess: false,
+        status: STATUS_CODES.UNAUTHORIZED,
+        ErrorMessage: ERROR_MESSAGES.UNAUTHORIZED,
+        schema: errorSchema,
+      });
     });
 
-    const actualProductData = createProductBody.Product;
-
-    expect(_.omit(actualProductData, ["_id", "createdOn"])).toEqual(productData);
-
-    id = actualProductData._id;
-
-    //TODO: Action
-
-    const updatedProductData = generateProductData();
-
-    const updatedProductResponse = await request.put(`${baseURL}${endpoints.productById(id)}`, {
-      data: updatedProductData,
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    test("Should NOT update product with not existing id", async ({ productsApi }) => {
+      const id = "690a3cfbef33a32d75a96737";
+      const response = await productsApi.update(id, generateProductData(), token);
+      validateResponse(response, {
+        IsSuccess: false,
+        status: STATUS_CODES.NOT_FOUND,
+        ErrorMessage: ERROR_MESSAGES.PRODUCT_NOT_FOUND(id),
+        schema: errorSchema,
+      });
     });
 
-    //TODO: Assert
-    const updateProductBody = await updatedProductResponse.json();
-    await validateResponse(updatedProductResponse, {
-      status: STATUS_CODES.OK,
-      schema: createProductSchema,
-      IsSuccess: true,
-      ErrorMessage: null,
+    test("Should NOT update product with existing product name", async ({ productsApi, productsApiService }) => {
+      const product1 = await productsApiService.create(token);
+      const product2 = await productsApiService.create(token);
+
+      ids.push(product1._id, product2._id);
+
+      const response = await productsApi.update(product1._id, generateProductData({ name: product2.name }), token);
+      validateResponse(response, {
+        IsSuccess: false,
+        status: STATUS_CODES.CONFLICT,
+        ErrorMessage: ERROR_MESSAGES.PRODUCT_ALREADY_EXISTS(product2.name),
+        schema: errorSchema,
+      });
     });
 
-    expect(_.omit(updateProductBody.Product, ["_id", "createdOn"])).toEqual(updatedProductData);
-    expect(id).toBe(updateProductBody.Product._id);
+    test("Should update product with max valid data", async ({ productsApi, productsApiService }) => {
+      const product = await productsApiService.create(token);
+      ids.push(product._id);
+      const productData = {
+        name: "Gloves64242aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        amount: 999,
+        price: 99999,
+        manufacturer: MANUFACTURERS.SONY,
+        notes:
+          "FugGijgp9M7HnljmfGpmqL2A8WqDnxSv0XdGDImYs8poMqJgkaD7rbqv9HyZzPZtGU6JxKOhvg6OvihDqoCdQ6aGZ3ekUg9aIZJYuKkXoAP4qwKAyK9dNj5LZMUjZw0SekIs3apD77gwMC8HBgJu9u1R2870NuDwp8wPrEWag5aFIEKmTeoP7XLRlLDYI7cEo8feLmvO9b2nvjs2LtE0DYUPhMuMrqHunMhbPdwieMw16CSYWisdw9hlRz",
+      };
+      const response = await productsApi.update(product._id, generateProductData(productData), token);
+      validateResponse(response, {
+        IsSuccess: false,
+        status: STATUS_CODES.OK,
+        ErrorMessage: null,
+        schema: createProductSchema,
+      });
+
+      expect(_.omit(response.body.Product, ["_id", "createdOn"])).toEqual(productData);
+    });
+
+    test("Should update product with min valid data", async ({ productsApi, productsApiService }) => {
+      const product = await productsApiService.create(token);
+      ids.push(product._id);
+      const productData = {
+        name: "gC1",
+        amount: 0,
+        price: 1,
+        manufacturer: MANUFACTURERS.SONY,
+        notes: "",
+      };
+      const response = await productsApi.update(product._id, generateProductData(productData), token);
+      validateResponse(response, {
+        IsSuccess: false,
+        status: STATUS_CODES.OK,
+        ErrorMessage: null,
+        schema: createProductSchema,
+      });
+      expect(_.omit(response.body.Product, ["_id", "createdOn"])).toEqual(productData);
+    });
   });
 });
