@@ -6,7 +6,7 @@ import { LoginService } from "api/service/login.service";
 import { ProductsApi } from "api/api/product.api";
 import { ProductsApiService } from "api/service/product.service";
 
-interface IApi {
+export interface IApi {
   // api
   productsApi: ProductsApi;
   loginApi: LoginApi;

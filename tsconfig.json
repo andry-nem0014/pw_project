@@ -8,6 +8,7 @@
     "allowImportingTsExtensions": true, //добавил т.к. была ошибка ипорта в register.data.ts
     "noEmit": true,                     //добавил т.к. была ошибка ипорта в register.data.ts
 
+
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
